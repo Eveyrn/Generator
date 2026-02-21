@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../viewmodel/outfit_view_model.dart';
 import '../widget/outfit_card.dart';
 
@@ -13,6 +14,14 @@ class HomeScreen extends StatelessWidget {
       child: Builder(
         builder: (context) {
           return Scaffold(
+            floatingActionButton: FloatingActionButton(
+              onPressed: () async {
+                await FirebaseFirestore.instance
+                    .collection('debug_test')
+                    .add({'time': DateTime.now().toString()});
+              },
+              child: const Icon(Icons.add),
+            ),
             body: SafeArea(
               child: Padding(
                 padding: const EdgeInsets.all(24),
@@ -35,12 +44,12 @@ class HomeScreen extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 24),
-          
+
                     Expanded(
                       child: Consumer<OutfitViewModel>(
                         builder: (context, viewModel, _) {
                           final outfit = viewModel.outfit;
-          
+
                           if (outfit == null) {
                             return const Center(
                               child: Text(
@@ -49,37 +58,22 @@ class HomeScreen extends StatelessWidget {
                               ),
                             );
                           }
-          
+
                           return SingleChildScrollView(
                             child: Column(
                               children: [
-                                OutfitCard(
-                                  title: 'Top',
-                                  value: outfit.top,
-                                ),
-                                OutfitCard(
-                                  title: 'Bottom',
-                                  value: outfit.bottom,
-                                ),
-                                OutfitCard(
-                                  title: 'Shoes',
-                                  value: outfit.shoes,
-                                ),
-                                OutfitCard(
-                                  title: 'Extra',
-                                  value: outfit.extra,
-                                ),
-                                OutfitCard(
-                                  title: 'Mood',
-                                  value: outfit.mood,
-                                ),
+                                OutfitCard(title: 'Top', value: outfit.top),
+                                OutfitCard(title: 'Bottom', value: outfit.bottom),
+                                OutfitCard(title: 'Shoes', value: outfit.shoes),
+                                OutfitCard(title: 'Extra', value: outfit.extra),
+                                OutfitCard(title: 'Mood', value: outfit.mood),
                               ],
                             ),
                           );
                         },
                       ),
                     ),
-          
+
                     SizedBox(
                       width: double.infinity,
                       height: 56,
@@ -109,7 +103,7 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
           );
-        }
+        },
       ),
     );
   }
